@@ -9,6 +9,6 @@ entries:
     name: optimizely-agent
     type: application
     urls:
-    - https://kieranajp.github.io/optimizely-agent-helm/optimizely-agent-0.0.1.tgz
-    version: 0.0.1
+    - https://kieranajp.github.io/optimizely-agent-helm/optimizely-agent-0.1.0.tgz
+    version: 0.1.0
 generated: "2021-08-17T12:47:31.469528496+02:00"
