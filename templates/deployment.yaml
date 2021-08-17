@@ -5,9 +5,6 @@ metadata:
   labels:
     {{- include "optimizely-agent.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "optimizely-agent.selectorLabels" . | nindent 6 }}
@@ -33,9 +30,20 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - -config.file=/etc/loki/config/config.yaml
+            {{- with .Values.extraArgs }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           ports:
-            - name: http
-              containerPort: 80
+            - name: api
+              containerPort: {{ .Values.services.api.targetPort }}
+              protocol: TCP
+            - name: admin
+              containerPort: {{ .Values.services.admin.targetPort }}
+              protocol: TCP
+            - name: webhook
+              containerPort: {{ .Values.services.webhook.targetPort }}
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -45,6 +53,10 @@ spec:
             httpGet:
               path: /
               port: http
+          volumeMounts:
+            - name: optimizely-agent-config
+              mountPath: /etc/optimizely/config.yaml
+              subPath: config.yaml
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

@@ -5,11 +5,25 @@ metadata:
   labels:
     {{- include "optimizely-agent.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.services.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
+    {{- if .Values.services.api.expose }}
+    - name: api
       protocol: TCP
-      name: http
+      port: {{ .Values.services.api.port}}
+      targetPort: {{ .Values.services.api.targetPort }}
+    {{- end }}
+    {{- if .Values.services.admin.expose }}
+    - name: admin
+      protocol: TCP
+      port: {{ .Values.services.admin.port}}
+      targetPort: {{ .Values.services.admin.targetPort }}
+    {{- end }}
+    {{- if .Values.services.webhook.expose }}
+    - name: webhook
+      protocol: TCP
+      port: {{ .Values.services.webhook.port}}
+      targetPort: {{ .Values.services.webhook.targetPort }}
+    {{- end }}
   selector:
     {{- include "optimizely-agent.selectorLabels" . | nindent 4 }}
