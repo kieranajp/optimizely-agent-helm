@@ -27,15 +27,14 @@ securityContext: {}
 services:
   type: ClusterIP
   api:
-    expose: true
     port: 80
     targetPort: 8080
   admin:
-    expose: false
+    enabled: true
     port: 8088
     targetPort: 8088
   webhook:
-    expose: true
+    enabled: true
     port: 8089
     targetPort: 8089
 
@@ -68,6 +67,10 @@ tolerations: []
 
 affinity: {}
 
+logs:
+  level: debug
+  pretty: true
+
 # -- Config file contents
 # @default -- See https://github.com/optimizely/agent/blob/master/config.yaml
 config: |
@@ -91,10 +94,10 @@ config: |
   log:
       ## log level used to filter logs of lesser severity (from highest to lowest):
       ## panic, fatal, error, warn, info, debug
-      level: info
+      level: {{ .Values.logs.level }}
       ## enable pretty colorized console logging. setting to false will output
       ## structured JSON logs. Recommended false in production.
-      pretty: false
+      pretty: {{ .Values.logs.pretty }}
 
   ##
   ## http server configuration
@@ -125,7 +128,7 @@ config: |
       ## the location of the TLS certificate file
   #    certFile: <cert-file>
       ## IP of the host
-      host: "127.0.0.1"
+      host: "0.0.0.0"
       ## configure optional Agent interceptors
   #    interceptors:
   #        httplog: {}

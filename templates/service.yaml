@@ -7,22 +7,20 @@ metadata:
 spec:
   type: {{ .Values.services.type }}
   ports:
-    {{- if .Values.services.api.expose }}
     - name: api
       protocol: TCP
-      port: {{ .Values.services.api.port}}
+      port: {{ .Values.services.api.port }}
       targetPort: {{ .Values.services.api.targetPort }}
-    {{- end }}
-    {{- if .Values.services.admin.expose }}
+    {{- if .Values.services.admin.enabled }}
     - name: admin
       protocol: TCP
-      port: {{ .Values.services.admin.port}}
+      port: {{ .Values.services.admin.port }}
       targetPort: {{ .Values.services.admin.targetPort }}
     {{- end }}
-    {{- if .Values.services.webhook.expose }}
+    {{- if .Values.services.webhook.enabled }}
     - name: webhook
       protocol: TCP
-      port: {{ .Values.services.webhook.port}}
+      port: {{ .Values.services.webhook.port }}
       targetPort: {{ .Values.services.webhook.targetPort }}
     {{- end }}
   selector:

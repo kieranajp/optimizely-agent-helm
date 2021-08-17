@@ -46,11 +46,11 @@ spec:
           livenessProbe:
             httpGet:
               path: /health
-              port: http
+              port: {{ .Values.services.api.targetPort }}
           readinessProbe:
             httpGet:
               path: /health
-              port: http
+              port: {{ .Values.services.api.targetPort }}
           volumeMounts:
             - name: "{{ include "optimizely-agent.name" . }}-config"
               mountPath: /etc/optimizely/config.yaml
