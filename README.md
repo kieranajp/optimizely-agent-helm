@@ -19,3 +19,9 @@ Add the following repo to use the chart:
 helm repo add optimizely-agent https://kieranajp.github.io/optimizely-agent-helm
 ```
 
+## TODO
+
+- [ ] Document values
+- [ ] Allow the creation or use of an existing Secret for SDK key management
+- [ ] Test that the Ingress works as expected, and provide saner defaults (we use a CRD for this)
+- [ ] Swap out the default NOTES.txt file for one that's actually useful
