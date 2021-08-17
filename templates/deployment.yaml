@@ -17,10 +17,10 @@ spec:
       labels:
         {{- include "optimizely-agent.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      volumes:
+      - name: {{ include "optimizely-agent.name" . }}-config
+        configMap:
+          name: {{ include "optimizely-agent.name" . }}-config
       serviceAccountName: {{ include "optimizely-agent.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -30,11 +30,9 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args:
-            - -config.file=/etc/loki/config/config.yaml
-            {{- with .Values.extraArgs }}
-            {{- toYaml . | nindent 12 }}
-            {{- end }}
+          env:
+            - name: OPTIMIZELY_CONFIG_FILENAME
+              value: /etc/optimizely/config.yaml
           ports:
             - name: api
               containerPort: {{ .Values.services.api.targetPort }}
@@ -47,14 +45,14 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /health
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: /health
               port: http
           volumeMounts:
-            - name: optimizely-agent-config
+            - name: "{{ include "optimizely-agent.name" . }}-config"
               mountPath: /etc/optimizely/config.yaml
               subPath: config.yaml
           resources:

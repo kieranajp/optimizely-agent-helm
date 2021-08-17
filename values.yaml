@@ -68,9 +68,6 @@ tolerations: []
 
 affinity: {}
 
-# Allows passing extra command line args to Optimizely Agent
-extraArgs: []
-
 # -- Config file contents
 # @default -- See https://github.com/optimizely/agent/blob/master/config.yaml
 config: |
